@@ -1,0 +1,12 @@
+[Unit]
+Description=ETHO Upload Middleware
+After=network.target
+
+[Service]
+Type=simple
+User=ether1
+ExecStart=/usr/bin/node /home/ether1/ethoprotocol-uploads/server.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

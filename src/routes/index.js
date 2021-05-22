@@ -11,7 +11,6 @@ let routes = (app) => {
   router.post("/signup", controller.signup);
   router.post("/authenticate", controller.authenticate);
   router.post("/list", controller.list);
-  router.get("/files/:name", controller.download);
 
   app.use(router);
 };

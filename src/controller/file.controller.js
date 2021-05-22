@@ -9,7 +9,11 @@ const removeContract = require("../middleware/remove");
 const registerAccount = require("../middleware/signup");
 const authenticateAccount = require("../middleware/authenticate");
 const privateKeyToAddress = require('ethereum-private-key-to-address')
-
+const connections = {
+    rpc: 'http://127.0.0.1:8545',
+    gateway: 'http://127.0.0.1:5001'
+};
+const privateKey = '';
 
 function validatePrivateKey(key) {
   try {
@@ -37,11 +41,11 @@ const upload = async (req, res) => {
       return res.status(400).send({ message: "No upload data found" });
     }
 
-    if(!validatePrivateKey(req.body.key)) {
+    if(!validatePrivateKey(privateKey)) {
       return res.status(500).send({ message: 'Invalid private key entry'});
     }
 
-    let ethofs = ethofsSDK(req.body.key);
+    let ethofs = ethofsSDK(privateKey, connections);
 
     ethofs.testAuthentication().then((result) => {
       const readableStreamForFile = fs.createReadStream(req.file.path);
@@ -83,11 +87,11 @@ const uploadDirectory = async (req, res) => {
       return res.status(400).send({ message: "No upload data found" });
     }
 
-    if(!validatePrivateKey(req.body.key)) {
+    if(!validatePrivateKey(privateKey)) {
       return res.status(500).send({ message: 'Invalid private key entry'});
     }
 
-    let ethofs = ethofsSDK(req.body.key);
+    let ethofs = ethofsSDK(privateKey, connections);
 
     var arrayOfFiles = [];
 
@@ -139,11 +143,11 @@ const extend = async (req, res) => {
     if (req.body == undefined) {
       return res.status(400).send({ message: "Etho Protocol key authentication failed" });
     }
-    if(!validatePrivateKey(req.body.key)) {
+    if(!validatePrivateKey(privateKey)) {
       return res.status(500).send({ message: 'Invalid private key entry'});
     }
 
-    let ethofs = ethofsSDK(req.body.key);
+    let ethofs = ethofsSDK(privatKey, connections);
 
     ethofs.testAuthentication().then((result) => {
       console.log(result);
@@ -178,11 +182,11 @@ const remove = async (req, res) => {
     if (req.body == undefined) {
       return res.status(400).send({ message: "Etho Protocol key authentication failed" });
     }
-    if(!validatePrivateKey(req.body.key)) {
+    if(!validatePrivateKey(privateKey)) {
       return res.status(500).send({ message: 'Invalid private key entry'});
     }
 
-    let ethofs = ethofsSDK(req.body.key);
+    let ethofs = ethofsSDK(privateKey, connections);
 
     ethofs.testAuthentication().then((result) => {
       console.log(result);
@@ -214,11 +218,11 @@ const signup = async (req, res) => {
       return res.status(400).send({ message: "Etho Protocol key authentication failed" });
     }
 
-    if(!validatePrivateKey(req.body.key)) {
+    if(!validatePrivateKey(privateKey)) {
       return res.status(500).send({ message: 'Invalid private key entry'});
     }
 
-    let ethofs = ethofsSDK(req.body.key);
+    let ethofs = ethofsSDK(privateKey, connections);
 
       ethofs.addUser(req.body.name).then((result) => {
         console.log(result);
@@ -246,12 +250,12 @@ const authenticate = async (req, res) => {
     if (req.body == undefined) {
       return res.status(400).send({ message: "Etho Protocol key authentication failed" });
     }
-    if(!validatePrivateKey(req.body.key)) {
+    if(!validatePrivateKey(privateKey)) {
       console.log("Invalid private key entry");
       return res.status(500).send({ message: 'Invalid private key entry'});
     }
 
-    let ethofs = ethofsSDK(req.body.key);
+    let ethofs = ethofsSDK(privateKey, connections);
 
     ethofs.testAuthentication().then((result) => {
       res.status(200).send({
@@ -274,11 +278,11 @@ const authenticate = async (req, res) => {
 const list = async (req, res) => {
   try {
     await listUploads(req, res);
-    if(!validatePrivateKey(req.body.key)) {
+    if(!validatePrivateKey(privateKey)) {
       return res.status(500).send({ message: 'Invalid private key entry'});
     }
 
-    let ethofs = ethofsSDK(req.body.key);
+    let ethofs = ethofsSDK(privateKey, connections);
 
     ethofs.testAuthentication().then((result) => {
       ethofs.pinList().then((result) => {
@@ -306,7 +310,7 @@ const calculateCost = async (req, res) => {
       return res.status(400).send({ message: "Incorrect upload cost calculation parameters provided" });
     }
 
-    let ethofs = ethofsSDK();
+    let ethofs = ethofsSDK(connections);
 
     const options = {
       ethofsOptions: {
